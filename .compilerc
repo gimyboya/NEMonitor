@@ -7,14 +7,15 @@
             "env",
             {
               "targets": {
-                "electron": 1.6
+                "electron": "1.6"
               }
             }
           ],
           "react"
         ],
         "plugins": [
-          "transform-async-to-generator"
+          "transform-async-to-generator",
+          ["transform-object-rest-spread", { "useBuiltIns": true }]
         ],
         "sourceMaps": "inline"
       }
@@ -26,14 +27,15 @@
             "env",
             {
               "targets": {
-                "electron": 1.6
+                "electron": "1.6"
               }
             }
           ],
           "react"
         ],
         "plugins": [
-          "transform-async-to-generator"
+          "transform-async-to-generator",
+          ["transform-object-rest-spread", { "useBuiltIns": true }]
         ],
         "sourceMaps": "none"
       }

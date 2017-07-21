@@ -1,8 +1,8 @@
 {
     "name": "nemonitor",
     "productName": "nemonitor",
-    "version": "1.0.0",
-    "description": "My Electron application description",
+    "version": "0.1.0",
+    "description": "A fork monitor for the NEM blockchain",
     "main": "src/index.js",
     "scripts": {
         "start": "electron-forge start",
@@ -11,7 +11,11 @@
         "lint": "echo \"No linting configured\""
     },
     "keywords": [],
-    "author": "gimy",
+    "author": "gimyboya",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/gimyboya/NEMonitor.git"
+    },
     "license": "MIT",
     "config": {
         "forge": {
@@ -44,14 +48,20 @@
         }
     },
     "dependencies": {
+        "axios": "^0.16.2",
         "electron-compile": "^6.4.1",
         "electron-devtools-installer": "^2.2.0",
+        "lodash": "^4.17.4",
         "vue": "^2.4.1"
     },
     "devDependencies": {
         "babel-plugin-transform-async-to-generator": "^6.24.1",
+        "babel-plugin-transform-object-rest-spread": "^6.23.0",
         "babel-preset-env": "^1.6.0",
         "babel-preset-react": "^6.24.1",
-        "electron-prebuilt-compile": "1.6.11"
+        "electron-prebuilt-compile": "1.6.11",
+        "eslint": "^4.2.0",
+        "eslint-config-airbnb": "^15.0.2",
+        "eslint-plugin-import": "^2.7.0"
     }
 }
