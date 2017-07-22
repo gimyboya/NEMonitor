@@ -20,42 +20,32 @@ export default {
     // ---- DFS Algorithm to query all the network ---
     //create an empty stack
     let activeNodeStack = []; 
-    // query the first nood (root)
     async function DFSGraph(){
-      let n = 1;
-      let root = await axios.get(`http://23.228.67.85:7890/node/info`);
+      // query the first nood (root)
+      let root = await axios.get(`http://hugealice.nem.ninja:7890/node/info`);
       // push the root node
       activeNodeStack.push(root.data);
       // marking the node by adding it to the graph
       _this.graph.addNode(root.data.endpoint.host, root.data);
       // while the stack is not empty
       while (!_.isEmpty(activeNodeStack)) {
-        // take one node from the top of the stack
-        let nodeV = _.head(activeNodeStack);
-        
-        // pop it
-        activeNodeStack.pop();
-        
+        // take one node from the top of the stack to visit next
+        let nodeV = activeNodeStack.pop(); 
         // request all it's neighborhood
         // and store all the neighbour noods
         let Neighbours = await axios.get(`${nodeV.endpoint.protocol}://${nodeV.endpoint.host}:${nodeV.endpoint.port}/node/peer-list/reachable`);
         // for each one of them
         for (let nodeW of Neighbours.data.data) {
           //check if they already exist in the graph
-          console.log(nodeW.endpoint.host);
           let node = _this.graph.getNode(nodeW.endpoint.host);
-          console.log(node);
           // if they don't
           if (!node) {
             // add the node to the stack
             activeNodeStack.push(nodeW);
             // mark it by adding it to the graph
             _this.graph.addNode(nodeW.endpoint.host, nodeW);
-            console.log(n, 'Nodes');
-            n += 1;
             // create a link to the parent node
-            console.log('v:', nodeV);
-            _this.graph.addLink(nodeV, nodeW);
+            _this.graph.addLink(nodeV.endpoint.host, nodeW.endpoint.host);
           }
         }
       }
@@ -64,13 +54,25 @@ export default {
 
     DFSGraph()
       .then(response =>{
-        var renderer = Viva.Graph.View.renderer(response, {
-          container: document.getElementById('canvas')
+        let layout = Viva.Graph.Layout.forceDirected(_this.graph, {
+          springLength: 30,
+          springCoeff: 0.0008,
+          dragCoeff: 0.01,
+          gravity: -1.2,
+          theta: 1
         });
+        let graphics = Viva.Graph.View.webglGraphics();
+        let renderer = Viva.Graph.View.renderer(_this.graph,
+          {
+            layout: layout,
+            graphics: graphics,
+            renderLinks: true,
+            prerender: true
+          });
         renderer.run();
       })
       .catch(e =>{
-        console.error(e);
+        console.log(e);
       });
     
       
@@ -78,9 +80,17 @@ export default {
 }
 </script>
 <style>
-#canvas{
+body {
+  height: 100%;
   width: 100%;
-  margin: 0 auto;
+  position: absolute;
+  overflow: hidden;
 }
+
+canvas {
+  width: 100%;
+  height: 100%;
+}
+
 </style>
 
