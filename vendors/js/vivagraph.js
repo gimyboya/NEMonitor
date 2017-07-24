@@ -65,6 +65,8 @@
 
         Layout: {
           forceDirected: require('ngraph.forcelayout'),
+          forceDirected3d: require('ngraph.forcelayout3d'),
+          offline: require('ngraph.offline.layout'),
           constant: require('./Layout/constant.js')
         },
 

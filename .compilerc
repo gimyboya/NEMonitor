@@ -15,7 +15,9 @@
         ],
         "plugins": [
           "transform-async-to-generator",
-          ["transform-object-rest-spread", { "useBuiltIns": true }]
+          ["transform-object-rest-spread", { "useBuiltIns": true }],
+          "dynamic-import-node",
+          "transform-export-extensions"
         ],
         "sourceMaps": "inline"
       }
@@ -34,6 +36,8 @@
           "react"
         ],
         "plugins": [
+          "dynamic-import-node",
+          "transform-export-extensions",
           "transform-async-to-generator",
           ["transform-object-rest-spread", { "useBuiltIns": true }]
         ],

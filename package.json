@@ -52,10 +52,16 @@
         "electron-compile": "^6.4.1",
         "electron-devtools-installer": "^2.2.0",
         "lodash": "^4.17.4",
-        "vue": "^2.4.1"
+        "ngraph.forcelayout3d": "0.0.16",
+        "ngraph.offline.layout": "^1.1.1",
+        "vue": "^2.4.1",
+        "vue-worker": "^1.2.1",
+        "vuetify": "^0.14.5"
     },
     "devDependencies": {
+        "babel-plugin-dynamic-import-node": "^1.0.2",
         "babel-plugin-transform-async-to-generator": "^6.24.1",
+        "babel-plugin-transform-export-extensions": "^6.22.0",
         "babel-plugin-transform-object-rest-spread": "^6.23.0",
         "babel-preset-env": "^1.6.0",
         "babel-preset-react": "^6.24.1",
