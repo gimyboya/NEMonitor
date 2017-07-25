@@ -4,52 +4,74 @@
     <v-navigation-drawer persistent light :mini-variant.sync="mini" v-model="drawer" overflow>
       <v-toolbar flat class="transparent">
         <v-list class="pa-0">
-          <v-list-tile avatar tag="div">
-            <v-list-tile-avatar>
-              <img src="" />
-            </v-list-tile-avatar>
-            <v-list-tile-content>
-              <v-list-tile-title>Collaps</v-list-tile-title>
-            </v-list-tile-content>
-            <v-list-tile-action>
-              <v-btn icon @click.native.stop="mini = !mini">
-                <v-icon>chevron_left</v-icon>
-              </v-btn>
-            </v-list-tile-action>
-          </v-list-tile>
+          <v-list-tile v-if="mini" @click.native.stop="mini = !mini">
+          <v-list-tile-action>
+            <v-icon light>chevron_right</v-icon>
+          </v-list-tile-action>
+        </v-list-tile>
+        <v-list-tile avatar tag="div">
+          <v-list-tile-content>
+            <v-list-tile-title>NIS status</v-list-tile-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-btn icon @click.native.stop="mini = !mini">
+              <v-icon>chevron_left</v-icon>
+            </v-btn>
+          </v-list-tile-action>
+        </v-list-tile>
         </v-list>
       </v-toolbar>
       <v-list class="pt-0" dense>
         <v-divider></v-divider>
-        <v-list-tile v-for="item in items" :key="item.title">
-          <v-list-tile-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+        <v-list-group>
+            <v-list-tile>
+              <v-list-tile-action>
+                <v-icon mdi v-badge="networkErrorNodes.length" class="red--after">lan-disconnect</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>Connection Error</v-list-tile-title>
+              </v-list-tile-content>
+              <v-list-tile-action>
+                <v-icon>keyboard_arrow_down</v-icon>
+              </v-list-tile-action>
+            </v-list-tile>
+            <v-list-tile v-for="node in networkErrorNodes" v-bind:key="node.identity.host">
+              <v-list-tile-content>
+                <v-list-tile-title>{{ node.identity.host }}</v-list-tile-title>
+              </v-list-tile-content>
+              <v-list-tile-action>
+                <v-icon mdi>autorenew</v-icon>
+              </v-list-tile-action>
+            </v-list-tile>
+          </v-list-group>
       </v-list>
     </v-navigation-drawer>
     <v-toolbar fixed class="indigo darken-4" dark>
       <v-toolbar-side-icon @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title>Toolbar</v-toolbar-title>
+      <v-toolbar-title>NEMonitor</v-toolbar-title>
     </v-toolbar>
     <main>
       <v-container fluid>
-        <div class="count">Nodes: {{count}}</div>
-        <div class="count">Errors: {{errCount}}</div>
-        <div id="canvas" ></div>
+        <v-layout row justify-center align-center>
+          <v-flex xs12 >
+            <v-card id="canvas" flat>
+              <v-toolbar class="white" floating dense style="position:absolute;">
+                  <v-text-field prepend-icon="search" hide-details single-line></v-text-field>
+              </v-toolbar>
+            </v-card>
+          </v-flex>
+        </v-layout>
         <v-btn
-                class="red scan-btn"
-                dark
-                absolute
-                bottom
-                right
-                fab
-              @click.native="onScan" >
-                <v-icon mdi>radar</v-icon>
-              </v-btn>
+          class="red scan-btn"
+          dark
+          absolute
+          bottom
+          right
+          fab
+          @click.native.stop="onScan" >
+          <v-icon mdi>access-point-network</v-icon>
+        </v-btn>
+        
       </v-container>
     </main>
   </v-app>
@@ -70,8 +92,22 @@ export default {
       count: 0,
       drawer: true,
       items: [
-        { title: 'Home', icon: 'dashboard' },
-        { title: 'About', icon: 'question_answer' }
+        {
+          action: 'lan-disconnect',
+          title: 'Connection Error',
+          items: [
+            { title: 'List Item' }
+          ]
+        },
+        {
+          action: 'lan-connect',
+          title: 'Connected Nodes',
+          items: [
+            { title: 'Breakfast & brunch' },
+            { title: 'New American' },
+            { title: 'Sushi' }
+          ]
+        },
       ],
       mini: true,
       right: null
@@ -193,9 +229,13 @@ body {
   background-color: #051525;
 }
 
+canvas {
+  width: 100vw;
+  height: 100vh !important;
+}
 #canvas {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh !important;
 }
 
 .count {
@@ -205,6 +245,15 @@ body {
 .scan-btn{
    top: 90%;
 }
+
+.toolbar--fixed+main {
+  padding-top: 40px;
+}
+
+.container{
+  padding: 0;
+}
+
 
 </style>
 
