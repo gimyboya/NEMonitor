@@ -1,9 +1,8 @@
 import Vue from 'vue';
-import VueWorker from 'vue-worker';
-import Vuetify from 'vuetify'
+import ElementUI from 'element-ui'
+import locale from 'element-ui/lib/locale/lang/en'
 import App from './app';
 
-Vue.use(Vuetify);
-Vue.use(VueWorker);
+Vue.use(ElementUI, { locale })
 
 const app = new Vue(App).$mount('#app');

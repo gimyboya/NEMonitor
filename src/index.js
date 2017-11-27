@@ -15,6 +15,7 @@ const createWindow = async () => {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    webPreferences: { experimentalFeatures: true }
   });
 
   // and load the index.html of the app.

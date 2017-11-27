@@ -1,80 +1,10 @@
 <template>
-
-  <v-app standalone>
-    <v-navigation-drawer persistent light :mini-variant.sync="mini" v-model="drawer" overflow>
-      <v-toolbar flat class="transparent">
-        <v-list class="pa-0">
-          <v-list-tile v-if="mini" @click.native.stop="mini = !mini">
-          <v-list-tile-action>
-            <v-icon light>chevron_right</v-icon>
-          </v-list-tile-action>
-        </v-list-tile>
-        <v-list-tile avatar tag="div">
-          <v-list-tile-content>
-            <v-list-tile-title>NIS status</v-list-tile-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-btn icon @click.native.stop="mini = !mini">
-              <v-icon>chevron_left</v-icon>
-            </v-btn>
-          </v-list-tile-action>
-        </v-list-tile>
-        </v-list>
-      </v-toolbar>
-      <v-list class="pt-0" dense>
-        <v-divider></v-divider>
-        <v-list-group>
-            <v-list-tile>
-              <v-list-tile-action>
-                <v-icon mdi v-badge="networkErrorNodes.length" class="red--after">lan-disconnect</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title>Connection Error</v-list-tile-title>
-              </v-list-tile-content>
-              <v-list-tile-action>
-                <v-icon>keyboard_arrow_down</v-icon>
-              </v-list-tile-action>
-            </v-list-tile>
-            <v-list-tile v-for="node in networkErrorNodes" v-bind:key="node.identity.host">
-              <v-list-tile-content>
-                <v-list-tile-title>{{ node.identity.host }}</v-list-tile-title>
-              </v-list-tile-content>
-              <v-list-tile-action>
-                <v-icon mdi>autorenew</v-icon>
-              </v-list-tile-action>
-            </v-list-tile>
-          </v-list-group>
-      </v-list>
-    </v-navigation-drawer>
-    <v-toolbar fixed class="indigo darken-4" dark>
-      <v-toolbar-side-icon @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title>NEMonitor</v-toolbar-title>
-    </v-toolbar>
-    <main>
-      <v-container fluid>
-        <v-layout row justify-center align-center>
-          <v-flex xs12 >
-            <v-card id="canvas" flat>
-              <v-toolbar class="white" floating dense style="position:absolute;">
-                  <v-text-field prepend-icon="search" hide-details single-line></v-text-field>
-              </v-toolbar>
-            </v-card>
-          </v-flex>
-        </v-layout>
-        <v-btn
-          class="red scan-btn"
-          dark
-          absolute
-          bottom
-          right
-          fab
-          @click.native.stop="onScan" >
-          <v-icon mdi>access-point-network</v-icon>
-        </v-btn>
-        
-      </v-container>
-    </main>
-  </v-app>
+  <div class="wrapper">
+    <header>Header</header>
+    <aside>Aside</aside>
+    <div class="main">Main</div>
+    <footer>Footer</footer>
+  </div>
 </template>
 
 <script>
@@ -90,27 +20,6 @@ export default {
       scanTimeout: 5000,
       networkErrorNodes: [],
       count: 0,
-      drawer: true,
-      items: [
-        {
-          action: 'lan-disconnect',
-          title: 'Connection Error',
-          items: [
-            { title: 'List Item' }
-          ]
-        },
-        {
-          action: 'lan-connect',
-          title: 'Connected Nodes',
-          items: [
-            { title: 'Breakfast & brunch' },
-            { title: 'New American' },
-            { title: 'Sushi' }
-          ]
-        },
-      ],
-      mini: true,
-      right: null
     };
   },
   computed: {
@@ -221,12 +130,46 @@ export default {
 }
 </script>
 <style>
-body {
+body, html {
+  margin: 0;
   height: 100%;
-  width: 100%;
-  position: absolute;
-  overflow: hidden;
-  background-color: #051525;
+}
+header, footer {
+  background-color: #B3C0D1;
+  color: #333;
+  text-align: center;
+}
+
+header {
+  grid-area: header;
+}
+
+footer {
+  grid-area: footer;
+}
+
+aside {
+  background-color: #D3DCE6;
+  color: #333;
+  text-align: center;
+  grid-area: sidebar;
+}
+
+.main {
+  background-color: #E9EEF3;
+  color: #333;
+  text-align: center;
+  grid-area: content;
+}
+
+.wrapper {
+  display: grid;
+  grid-template-columns: 200px auto auto;
+  grid-template-rows: 100px auto 100px;
+  grid-template-areas: "header  header header"
+                        "sidebar content content"
+                        "footer footer footer";
+  height: 100%;
 }
 
 canvas {
@@ -236,22 +179,6 @@ canvas {
 #canvas {
   width: 100vw;
   height: 100vh !important;
-}
-
-.count {
-  color: #E7E2DF;
-}
-
-.scan-btn{
-   top: 90%;
-}
-
-.toolbar--fixed+main {
-  padding-top: 40px;
-}
-
-.container{
-  padding: 0;
 }
 
 
