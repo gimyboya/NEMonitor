@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, webFrame } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { enableLiveReload } from 'electron-compile';
 
@@ -13,9 +13,9 @@ if (isDevMode) enableLiveReload();
 const createWindow = async () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: { experimentalFeatures: true }
+    width: 1024,
+    height: 786,
+    webPreferences: { experimentalFeatures: true, zoomFactor: 1.50 }
   });
 
   // and load the index.html of the app.

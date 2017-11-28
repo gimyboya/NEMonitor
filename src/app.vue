@@ -1,9 +1,55 @@
 <template>
   <div class="wrapper">
-    <header>Header</header>
-    <aside>Aside</aside>
-    <div class="main">Main</div>
+    <header>
+      <el-select 
+        v-model="nodeUrl" 
+        placeholder="Select or enter a node"
+        filterable
+        allow-create
+        >
+      <el-option-group
+        v-for="group in nodes"
+        :key="group.label"
+        :label="group.label">
+        <el-option
+          v-for="item in group.options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-option-group>
+    </el-select>
+    </header>
+    <!-- header-end -->
+
+    <aside>
+      <h2>Node status</h2>
+      <el-menu
+      default-active="1"
+      class="el-menu-vertical-demo"
+      background-color="#545c64"
+      text-color="#fff"
+      active-text-color="#ffd04b">
+        <el-menu-item index="1">
+          <i class="el-icon-menu"></i>
+          <span>Navigator one</span>
+        </el-menu-item>
+        <el-menu-item index="2">
+          <i class="el-icon-setting"></i>
+          <span>Navigator Tow</span>
+        </el-menu-item>
+      </el-menu>
+    </aside>
+    <!-- sidebar-end -->
+
+    <div class="main">
+      <div id="canvas"></div>
+    </div>
+    <!-- main-end -->
+
     <footer>Footer</footer>
+    <!-- footer-end -->
+
   </div>
 </template>
 
@@ -20,6 +66,32 @@ export default {
       scanTimeout: 5000,
       networkErrorNodes: [],
       count: 0,
+      nodes: [{
+          label: 'Mainnet Nodes',
+          options: [{
+            value: 'Shanghai',
+            label: 'Shanghai'
+          }, {
+            value: 'Beijing',
+            label: 'Beijing'
+          }]
+        }, {
+          label: 'Testnet Nodes',
+          options: [{
+            value: 'Chengdu',
+            label: 'Chengdu'
+          }, {
+            value: 'Shenzhen',
+            label: 'Shenzhen'
+          }, {
+            value: 'Guangzhou',
+            label: 'Guangzhou'
+          }, {
+            value: 'Dalian',
+            label: 'Dalian'
+          }]
+        }],
+        nodeUrl: ''
     };
   },
   computed: {
@@ -133,6 +205,7 @@ export default {
 body, html {
   margin: 0;
   height: 100%;
+  font-family: 'Open Sans', sans-serif;
 }
 header, footer {
   background-color: #B3C0D1;
@@ -142,6 +215,9 @@ header, footer {
 
 header {
   grid-area: header;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 footer {
@@ -149,8 +225,8 @@ footer {
 }
 
 aside {
-  background-color: #D3DCE6;
-  color: #333;
+  background-color: #545c64;
+  color: #fff;
   text-align: center;
   grid-area: sidebar;
 }
@@ -165,10 +241,10 @@ aside {
 .wrapper {
   display: grid;
   grid-template-columns: 200px auto auto;
-  grid-template-rows: 100px auto 100px;
-  grid-template-areas: "header  header header"
+  grid-template-rows: 50px auto 50px;
+  grid-template-areas: "sidebar  header header"
                         "sidebar content content"
-                        "footer footer footer";
+                        "sidebar footer footer";
   height: 100%;
 }
 
