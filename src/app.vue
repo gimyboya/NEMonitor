@@ -47,7 +47,9 @@
     </div>
     <!-- main-end -->
 
-    <footer>Footer</footer>
+    <footer>
+      <el-button type="success" plain :loading="loading" @click="onScan">Scan</el-button>
+    </footer>
     <!-- footer-end -->
 
   </div>
@@ -55,7 +57,8 @@
 
 <script>
 import axios from 'axios' // Promise based HTTP client for the browser and node.js
-import _ from 'lodash'; // A modern JavaScript utility library delivering modularity, performance & extras.
+import _ from 'lodash'; // A modern JavaScript utility library delivering modularity, performance & extras
+import Deque from 'double-ended-queue';
 
 export default {
   data () {
@@ -66,6 +69,7 @@ export default {
       scanTimeout: 5000,
       networkErrorNodes: [],
       count: 0,
+      loading: false,
       nodes: [{
           label: 'Mainnet Nodes',
           options: [{
@@ -103,10 +107,76 @@ export default {
     onTimeoutChange(value){
       axios.defaults.timeout = this.scanTimeout;
     },
-    async onScan(e){
-      console.log('I started!');
+    async onScanBFS(e){
       // capture the scope of this
       const _this = this;
+      // ---- BFS Algorithm to query all the network ---
+      //create an empty queue
+      let Queue = new Deque();
+      // Starting point
+      // Mainet:
+      //Testnet: https://adamexperimental.cyberblox.my
+      const ROOT = await this.axios.get(`http://adamexperimental.cyberblox.my:7890/node/info`);
+      // enqueue the node
+      Queue.push(ROOT.data);
+      // marking the node by adding it to the graph
+      this.graph.addNode(ROOT.data.endpoint.host, ROOT.data);
+      // visual incrementation
+      this.$store.commit('increment');
+      while (!Queue.isEmpty) {
+        // dequeue a node
+        const NODE = Queue.shift();
+        // catch Errors if any to continue the scan
+        try {
+          // request all it's neighborhood
+          // and store all the neighbour noods
+          let Neighbours = await _this.axios.get(`${NODE.endpoint.protocol}://${NODE.endpoint.host}:${NODE.endpoint.port}/node/peer-list/reachable`);
+
+          // for each one of them
+          for (let nodeW of Neighbours.data.data) {
+            //check if they already exist in the graph
+            let node = _this.graph.getNode(nodeW.endpoint.host);
+            // if they don't (not visited)
+            if (!node) {
+              // add the node to the Queue
+              Queue.push(ROOT.data);
+              // mark it by adding it to the graph
+              _this.graph.addNode(nodeW.endpoint.host, nodeW);
+              // incrment the node counter in the store (visula representation)
+              _this.$store.commit('increment');
+              console.log('added another node');
+              // create a link to the parent node
+              // This part needs to be visited
+              _this.graph.addLink(nodeV.endpoint.host, nodeW.endpoint.host);
+            } else {
+              // the node exist is already in the graph so we just add a link
+              _this.graph.addLink(nodeV.endpoint.host, nodeW.endpoint.host);
+            }
+          }
+
+        } catch (e) {
+          if (!e.response) {
+            // network error
+            _this.$store.commit('addError', NODE);
+          } else {
+            console.log(e.response);
+            // http status code
+            const code = e.response.status
+            console.log('code:', code);
+            // response data
+            const response = e.response.data
+            console.log('data:', response);
+          }
+        }
+        
+      }
+
+
+    },
+    async onScanDFS(e){
+      // capture the scope of this
+      const _this = this;
+      _this.loading = true;
       // ---- DFS Algorithm to query all the network ---
       //create an empty stack
       let activeNodeStack = [];
@@ -126,6 +196,7 @@ export default {
           // and store all the neighbour noods
           let Neighbours = await _this.axios.get(`${nodeV.endpoint.protocol}://${nodeV.endpoint.host}:${nodeV.endpoint.port}/node/peer-list/reachable`);
           // for each one of them
+          console.log(Neighbours);
           for (let nodeW of Neighbours.data.data) {
             //check if they already exist in the graph
             let node = _this.graph.getNode(nodeW.endpoint.host);
@@ -157,6 +228,7 @@ export default {
         }
         
       }
+      _this.loading = false;
       return _this.graph;
     }
   },
@@ -222,6 +294,9 @@ header {
 
 footer {
   grid-area: footer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 aside {
@@ -248,15 +323,15 @@ aside {
   height: 100%;
 }
 
-canvas {
-  width: 100vw;
-  height: 100vh !important;
-}
 #canvas {
-  width: 100vw;
-  height: 100vh !important;
+  height: 100%;
 }
 
+canvas {
+  width: 100%;
+  height: 100%;
+  background-color: #222;
+}
 
 </style>
 
